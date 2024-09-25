@@ -58,6 +58,8 @@ export default function Home() {
   useEffect(() => {
     if (lastJsonMessage?.e === 'kline') {
       updateCandlestickChart(lastJsonMessage.k);
+    } else if (lastJsonMessage?.e === 'depthUpdate') {
+      updateOrderBook(lastJsonMessage);
     }
   }, [lastJsonMessage]);
 
@@ -74,6 +76,14 @@ export default function Home() {
     candlestickSeriesRef.current.update(candlestick);
   };
 
+  const updateOrderBook = (depthUpdate) => {
+    const { b, a } = depthUpdate;
+    setOrderBook((prev) => ({
+      bids: b,
+      asks: a,
+    }));
+  };
+
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',
     [ReadyState.OPEN]: 'Open',
@@ -87,6 +97,11 @@ export default function Home() {
       <h1>SOL/USDT Tracker</h1>
       <div>WebSocket Status: {connectionStatus}</div>
       <div ref={chartContainerRef}></div>
+      <div>
+        <h2>Order Book</h2>
+        <div>Bids: {JSON.stringify(orderBook.bids)}</div>
+        <div>Asks: {JSON.stringify(orderBook.asks)}</div>
+      </div>
     </div>
   );
 }
