@@ -55,6 +55,25 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    if (lastJsonMessage?.e === 'kline') {
+      updateCandlestickChart(lastJsonMessage.k);
+    }
+  }, [lastJsonMessage]);
+
+  const updateCandlestickChart = (klineData) => {
+    const { t, o, h, l, c } = klineData;
+    const candlestick = {
+      time: t / 1000,
+      open: parseFloat(o),
+      high: parseFloat(h),
+      low: parseFloat(l),
+      close: parseFloat(c),
+    };
+
+    candlestickSeriesRef.current.update(candlestick);
+  };
+
   const connectionStatus = {
     [ReadyState.CONNECTING]: 'Connecting',
     [ReadyState.OPEN]: 'Open',
