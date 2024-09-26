@@ -1,14 +1,11 @@
 "use client";
 import '../app/globals.css'
 
-
 import { useState, useEffect, useRef } from 'react';
 import { createChart, CrosshairMode } from 'lightweight-charts';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowUpDown, Maximize2 } from 'lucide-react';
 
 export default function TradingDashboard() {
@@ -132,7 +129,7 @@ export default function TradingDashboard() {
         amount: tradeData.q,
         time: new Date(tradeData.T).toLocaleTimeString(),
       },
-      ...prevTrades.slice(0, 9),
+      ...prevTrades.slice(0, 9), 
     ]);
   };
 
@@ -151,10 +148,10 @@ export default function TradingDashboard() {
         <Card className="col-span-3 bg-[#1e1e1e] border-[#2a2a2a]">
           <CardContent className="p-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Order Book</h2>
+              <h2 className="text-lg font-semibold text-gray-300">Order Book</h2>
               <Button variant="ghost" size="icon"><ArrowUpDown className="h-4 w-4" /></Button>
             </div>
-            <div className="grid grid-cols-3 gap-2 text-xs mb-2">
+            <div className="grid grid-cols-3 gap-2 text-xs mb-2 text-gray-300">
               <div>Price(USDT)</div>
               <div>Amount(SOL)</div>
               <div>Total</div>
@@ -169,7 +166,7 @@ export default function TradingDashboard() {
               ))}
             </div>
             <div className="my-2 text-center text-lg font-bold text-green-400">
-              {pair.price}
+              Pair Price: {pair.price}
             </div>
             <div className="space-y-1">
               {orderBook.bids.map(([price, amount]) => (
@@ -187,7 +184,7 @@ export default function TradingDashboard() {
         <Card className="col-span-6 bg-[#1e1e1e] border-[#2a2a2a]">
           <CardContent className="p-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Candlestick Chart</h2>
+              <h2 className="text-lg font-semibold  text-gray-300">Candlestick Chart</h2>
               <Button variant="ghost" size="icon"><Maximize2 className="h-4 w-4" /></Button>
             </div>
             <div ref={chartContainerRef} className="w-full h-[400px]"></div>
@@ -198,20 +195,25 @@ export default function TradingDashboard() {
         <Card className="col-span-3 bg-[#1e1e1e] border-[#2a2a2a]">
           <CardContent className="p-4">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-lg font-semibold">Trades</h2>
+              <h2 className="text-lg font-semibold text-gray-300">Trades</h2>
               <Button variant="ghost" size="icon"><ArrowUpDown className="h-4 w-4" /></Button>
             </div>
-            <div className="space-y-2 text-xs">
+            <div className="space-y-2">
               {trades.map((trade, index) => (
-                <div key={index} className="flex justify-between">
+                <div key={index} className="grid grid-cols-3 gap-2 text-xs">
                   <div>{parseFloat(trade.price).toFixed(2)}</div>
-                  <div>{parseFloat(trade.amount).toFixed(4)}</div>
+                  <div>{parseFloat(trade.amount).toFixed(3)}</div>
                   <div>{trade.time}</div>
                 </div>
               ))}
             </div>
           </CardContent>
         </Card>
+      </div>
+      <div className="mt-4 text-center">
+        <div className="text-sm">
+          Connection to exchange: <span className={connectionStatus === 'Open' ? 'text-green-400' : 'text-red-400'}>{connectionStatus}</span>
+        </div>
       </div>
     </div>
   );
